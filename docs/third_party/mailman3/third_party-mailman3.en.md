@@ -28,7 +28,7 @@ This guide is based on different steps:
 3. Obtain SSL certificates with _Let's Encrypt_
 4. Install _mailcow_ with _Mailman_ integration
 5. Install _Mailman_
-6. 🏃 Run
+6. Run
 
 ### DNS setup
 
@@ -227,7 +227,7 @@ DEBUG = False
 
 You can change `LANGUAGE_CODE` and `SOCIALACCOUNT_PROVIDERS` to your needs.
 
-### 🏃 Run
+### Run
 
 Run (as _root_ or _sudo_)
 

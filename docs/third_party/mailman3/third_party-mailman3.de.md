@@ -28,7 +28,7 @@ Diese Anleitung basiert auf verschiedenen Schritten:
 1. Beziehen Sie SSL-Zertifikate mit _Let's Encrypt_.
 1. Installieren Sie _mailcow_ mit _Mailman_ Integration
 1. Installieren Sie _Mailman_.
-1. 🏃 Ausführen
+1. Ausführen
 
 ### DNS-Einrichtung
 
@@ -227,7 +227,7 @@ DEBUG = False
 
 Sie können `LANGUAGE_CODE` und `SOCIALACCOUNT_PROVIDERS` an Ihre Bedürfnisse anpassen.
 
-### 🏃 Ausführen
+### Ausführen
 
 Ausführen (als _root_ oder _sudo_)
 
