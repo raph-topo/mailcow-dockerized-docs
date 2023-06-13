@@ -8,31 +8,31 @@
 
 ## Introduction
 
-This guide aims to install and configure [mailcow-dockerized](https://github.com/mailcow/mailcow-dockerized) with [docker-mailman](https://github.com/maxking/docker-mailman) and to provide some useful scripts. An essential condition is, to preserve *mailcow* and *Mailman* in their own installations for independent updates.
+This guide aims to install and configure [mailcow-dockerized](https://github.com/mailcow/mailcow-dockerized) with [docker-mailman](https://github.com/maxking/docker-mailman) and to provide some useful scripts. An essential condition is, to preserve _mailcow_ and _Mailman_ in their own installations for independent updates.
 
 There are some guides and projects on the internet, but they are not up to date and/or incomplete in documentation or configuration. This guide is based on the work of:
 
 - [mailcow-mailman3-dockerized](https://github.com/Shadowghost/mailcow-mailman3-dockerized) by [Shadowghost](https://github.com/Shadowghost)
 - [mailman-mailcow-integration](https://gitbucket.pgollor.de/docker/mailman-mailcow-integration)
 
-After finishing this guide, [mailcow-dockerized](https://github.com/mailcow/mailcow-dockerized) and [docker-mailman](https://github.com/maxking/docker-mailman) will run and *Apache* as a reverse proxy will serve the web frontends.
+After finishing this guide, [mailcow-dockerized](https://github.com/mailcow/mailcow-dockerized) and [docker-mailman](https://github.com/maxking/docker-mailman) will run and _Apache_ as a reverse proxy will serve the web frontends.
 
-The operating system used is an *Ubuntu 20.04 LTS*.
+The operating system used is an _Ubuntu 20.04 LTS_.
 
 ## Installation
 
 This guide is based on different steps:
 
 1. DNS setup
-2. Install *Apache* as a reverse proxy
-3. Obtain SSL certificates with *Let's Encrypt*
-4. Install *mailcow* with *Mailman* integration
-5. Install *Mailman*
+2. Install _Apache_ as a reverse proxy
+3. Obtain SSL certificates with _Let's Encrypt_
+4. Install _mailcow_ with _Mailman_ integration
+5. Install _Mailman_
 6. 🏃 Run
 
 ### DNS setup
 
-Most of the configuration is covered by *mailcow*s [DNS setup](../../prerequisite/prerequisite-dns.en.md). After finishing this setup add another subdomain for *Mailman*, e.g. `lists.example.org` that points to the same server:
+Most of the configuration is covered by *mailcow*s [DNS setup](../../prerequisite/prerequisite-dns.en.md). After finishing this setup add another subdomain for _Mailman_, e.g. `lists.example.org` that points to the same server:
 
 ```
 # Name    Type       Value
@@ -40,32 +40,33 @@ lists     IN A       1.2.3.4
 lists     IN AAAA    dead:beef
 ```
 
-### Install *Apache* as a reverse proxy
+### Install _Apache_ as a reverse proxy
 
-Install *Apache*, e.g. with this guide from *Digital Ocean*: [How To Install the Apache Web Server on Ubuntu 20.04](https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-20-04).
+Install _Apache_, e.g. with this guide from _Digital Ocean_: [How To Install the Apache Web Server on Ubuntu 20.04](https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-20-04).
 
-Activate certain *Apache* modules (as *root* or *sudo*):
+Activate certain _Apache_ modules (as _root_ or _sudo_):
 
 ```
 a2enmod rewrite proxy proxy_http headers ssl wsgi proxy_uwsgi http2
 ```
 
-Maybe you have to install further packages to get these modules. This [PPA](https://launchpad.net/~ondrej/+archive/ubuntu/apache2) by *Ondřej Surý* may help you.
+Maybe you have to install further packages to get these modules. This [PPA](https://launchpad.net/~ondrej/+archive/ubuntu/apache2) by _Ondřej Surý_ may help you.
 
 #### vHost configuration
 
-Copy the [mailcow.conf](https://github.com/g4rf/dockerized-mailcow-mailman/tree/master/apache/mailcow.conf) and the [mailman.conf](https://github.com/g4rf/dockerized-mailcow-mailman/tree/master/apache/mailman.conf) in the *Apache* conf folder `sites-available` (e.g. under `/etc/apache2/sites-available`).
+Copy the [mailcow.conf](https://github.com/g4rf/dockerized-mailcow-mailman/tree/master/apache/mailcow.conf) and the [mailman.conf](https://github.com/g4rf/dockerized-mailcow-mailman/tree/master/apache/mailman.conf) in the _Apache_ conf folder `sites-available` (e.g. under `/etc/apache2/sites-available`).
 
 Change in `mailcow.conf`:
+
 - `MAILCOW_HOSTNAME` to your **MAILCOW_HOSTNAME**
 
 Change in `mailman.conf`:
-- `MAILMAN_DOMAIN` to your *Mailman* domain (e.g. `lists.example.org`)
+
+- `MAILMAN_DOMAIN` to your _Mailman_ domain (e.g. `lists.example.org`)
 
 **Don't activate the configuration, as the ssl certificates and directories are missing yet.**
 
-
-### Obtain SSL certificates with *Let's Encrypt*
+### Obtain SSL certificates with _Let's Encrypt_
 
 Check if your DNS config is available over the internet and points to the right IP addresses, e.g. with [MXToolBox](https://mxtoolbox.com):
 
@@ -74,20 +75,20 @@ Check if your DNS config is available over the internet and points to the right 
 - https://mxtoolbox.com/SuperTool.aspx?action=a%3aMAILMAN_DOMAIN
 - https://mxtoolbox.com/SuperTool.aspx?action=aaaa%3aMAILMAN_DOMAIN
 
-Install [certbot](https://certbot.eff.org/) (as *root* or *sudo*):
+Install [certbot](https://certbot.eff.org/) (as _root_ or _sudo_):
 
 ```
 apt install certbot
 ```
 
-Get the desired certificates (as *root* or *sudo*):
+Get the desired certificates (as _root_ or _sudo_):
 
 ```
 certbot certonly -d MAILCOW_HOSTNAME
 certbot certonly -d MAILMAN_DOMAIN
 ```
 
-### Install *mailcow* with *Mailman* integration
+### Install _mailcow_ with _Mailman_ integration
 
 #### Install mailcow
 
@@ -95,7 +96,7 @@ Follow the [mailcow installation](../../i_u_m/i_u_m_install.en.md). **Omit step 
 
 #### Configure mailcow
 
-This is also **Step 4** in the official *mailcow installation* (`nano mailcow.conf`). So change to your needs and alter the following variables:
+This is also **Step 4** in the official _mailcow installation_ (`nano mailcow.conf`). So change to your needs and alter the following variables:
 
 ```
 HTTP_PORT=18080            # don't use 8080 as mailman needs it
@@ -127,8 +128,8 @@ networks:
   docker-mailman_mailman:
     external: true
 ```
-The additional volume is used by *Mailman* to generate additional config files for *mailcow postfix*. The external network is build and used by *Mailman*. *mailcow* needs it to deliver incoming list mails to *Mailman*.
 
+The additional volume is used by _Mailman_ to generate additional config files for _mailcow postfix_. The external network is build and used by _Mailman_. _mailcow_ needs it to deliver incoming list mails to _Mailman_.
 
 Create the file `/opt/mailcow-dockerized/data/conf/postfix/extra.cf` (e.g. with `nano`) and add the following lines:
 
@@ -159,18 +160,19 @@ relay_recipient_maps =
   proxy:mysql:/opt/postfix/conf/sql/mysql_relay_recipient_maps.cf,
   regexp:/opt/mailman/core/var/data/postfix_lmtp
 ```
-As we overwrite *mailcow postfix* configuration here, this step may break your normal mail transports. Check the [original configuration files](https://github.com/mailcow/mailcow-dockerized/tree/master/data/conf/postfix) if anything changed.
+
+As we overwrite _mailcow postfix_ configuration here, this step may break your normal mail transports. Check the [original configuration files](https://github.com/mailcow/mailcow-dockerized/tree/master/data/conf/postfix) if anything changed.
 
 #### SSL certificates
 
-As we proxying *mailcow*, we need to copy the SSL certificates into the *mailcow* file structure. This task will do the script [renew-ssl.sh](https://github.com/g4rf/dockerized-mailcow-mailman/tree/master/scripts/renew-ssl.sh) for us:
+As we proxying _mailcow_, we need to copy the SSL certificates into the _mailcow_ file structure. This task will do the script [renew-ssl.sh](https://github.com/g4rf/dockerized-mailcow-mailman/tree/master/scripts/renew-ssl.sh) for us:
 
 - Copy the file to `/opt/mailcow-dockerized`
-- Change **mailcow_HOSTNAME** to your *mailcow* hostname
+- Change **mailcow_HOSTNAME** to your _mailcow_ hostname
 - Make it executable (`chmod a+x renew-ssl.sh`)
 - **Do not run it yet, as we first need Mailman**
 
-You have to create a *cronjob*, so that new certificates will be copied. Execute as *root* or *sudo*:
+You have to create a _cronjob_, so that new certificates will be copied. Execute as _root_ or _sudo_:
 
 ```
 crontab -e
@@ -182,11 +184,11 @@ To run the script every day at 5am, add:
 0   5  *   *   *     /opt/mailcow-dockerized/renew-ssl.sh
 ```
 
-### Install *Mailman*
+### Install _Mailman_
 
 Basicly follow the instructions at [docker-mailman](https://github.com/maxking/docker-mailman). As they are a lot, here is in a nuthshell what to do:
 
-As *root* or *sudo*:
+As _root_ or _sudo_:
 
 ```
 cd /opt
@@ -198,11 +200,11 @@ cd docker-mailman
 
 #### Configure Mailman
 
-Create a long key for *Hyperkitty*, e.g. with the linux command `cat /dev/urandom | tr -dc a-zA-Z0-9 | head -c30; echo`. Save this key for a moment as HYPERKITTY_KEY.
+Create a long key for _Hyperkitty_, e.g. with the linux command `cat /dev/urandom | tr -dc a-zA-Z0-9 | head -c30; echo`. Save this key for a moment as HYPERKITTY_KEY.
 
 Create a long password for the database, e.g. with the linux command `cat /dev/urandom | tr -dc a-zA-Z0-9 | head -c30; echo`. Save this password for a moment as DBPASS.
 
-Create a long key for *Django*, e.g. with the linux command `cat /dev/urandom | tr -dc a-zA-Z0-9 | head -c30; echo`. Save this key for a moment as DJANGO_KEY.
+Create a long key for _Django_, e.g. with the linux command `cat /dev/urandom | tr -dc a-zA-Z0-9 | head -c30; echo`. Save this key for a moment as DJANGO_KEY.
 
 Create the file `/opt/docker-mailman/docker compose.override.yaml` and replace `HYPERKITTY_KEY`, `DBPASS` and `DJANGO_KEY` with the generated values:
 
@@ -238,7 +240,7 @@ services:
     restart: always
 ```
 
-At `mailman-web` fill in correct values for `SERVE_FROM_DOMAIN` (e.g. `lists.example.org`), `MAILMAN_ADMIN_USER` and `MAILMAN_ADMIN_EMAIL`. You need the admin credentials to log into the web interface (*Postorius*). For setting **the password for the first time** use the *Forgot password* function in the web interface.
+At `mailman-web` fill in correct values for `SERVE_FROM_DOMAIN` (e.g. `lists.example.org`), `MAILMAN_ADMIN_USER` and `MAILMAN_ADMIN_EMAIL`. You need the admin credentials to log into the web interface (_Postorius_). For setting **the password for the first time** use the _Forgot password_ function in the web interface.
 
 About other configuration options read [Mailman-web](https://github.com/maxking/docker-mailman#mailman-web-1) and [Mailman-core](https://github.com/maxking/docker-mailman#mailman-core-1) documentation.
 
@@ -266,12 +268,12 @@ DEFAULT_FROM_EMAIL = 'mailman@example.org'
 
 DEBUG = False
 ```
-You can change `LANGUAGE_CODE` and `SOCIALACCOUNT_PROVIDERS` to your needs.
 
+You can change `LANGUAGE_CODE` and `SOCIALACCOUNT_PROVIDERS` to your needs.
 
 ### 🏃 Run
 
-Run (as *root* or *sudo*)
+Run (as _root_ or _sudo_)
 
 === "docker compose (Plugin)"
 
@@ -311,7 +313,7 @@ Run (as *root* or *sudo*)
 
 ### New lists aren't recognized by postfix instantly
 
-When you create a new list and try to immediately send an e-mail, *postfix* responses with `User doesn't exist`, because *postfix* won't deliver it to *Mailman* yet. The configuration at `/opt/mailman/core/var/data/postfix_lmtp` is not instantly updated. If you need the list instantly, restart *postifx* manually:
+When you create a new list and try to immediately send an e-mail, _postfix_ responses with `User doesn't exist`, because _postfix_ won't deliver it to _Mailman_ yet. The configuration at `/opt/mailman/core/var/data/postfix_lmtp` is not instantly updated. If you need the list instantly, restart _postifx_ manually:
 
 === "docker compose (Plugin)"
 
