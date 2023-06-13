@@ -40,53 +40,9 @@ lists IN A 1.2.3.4
 lists IN AAAA dead:beef
 ```
 
-### Installieren Sie _Apache_ als Reverse Proxy
+### Installieren Sie einen Reverse Proxy
 
-Installieren Sie _Apache_, z.B. mit dieser Anleitung von _Digital Ocean_: [How To Install the Apache Web Server on Ubuntu 20.04 (Englisch)](https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-20-04).
-
-Aktivieren Sie bestimmte _Apache_ Module (als _root_ oder _sudo_):
-
-```
-a2enmod rewrite proxy proxy_http headers ssl wsgi proxy_uwsgi http2
-```
-
-Möglicherweise müssen Sie weitere Pakete installieren, um diese Module zu erhalten. Dieses [PPA](https://launchpad.net/~ondrej/+archive/ubuntu/apache2) von _Ondřej Surý_ könnte Ihnen helfen.
-
-#### vHost-Konfiguration
-
-Kopieren Sie die [mailcow.conf](https://github.com/g4rf/dockerized-mailcow-mailman/tree/master/apache/mailcow.conf) und die [mailman.conf](https://github.com/g4rf/dockerized-mailcow-mailman/tree/master/apache/mailman.conf) in den _Apache_ conf Ordner `sites-available` (z.B. unter `/etc/apache2/sites-available`).
-
-Änderung in `mailcow.conf`:
-
-- `MAILCOW_HOSTNAME` zu Ihrem **MAILCOW_HOSTNAME**
-
-Änderung in `mailman.conf`:
-
-- `MAILMAN_DOMAIN` in Ihre _Mailman_-Domain (z.B. `Lists.example.org`)
-
-\*\*Aktivieren Sie die Konfiguration noch nicht, da die ssl-Zertifikate und Verzeichnisse noch fehlen.
-
-### Beziehen Sie SSL-Zertifikate mit _Let's Encrypt_.
-
-Prüfen Sie, ob Ihre DNS-Konfiguration über das Internet verfügbar ist und auf die richtigen IP-Adressen zeigt, z.B. mit [MXToolBox](https://mxtoolbox.com):
-
-- https://mxtoolbox.com/SuperTool.aspx?action=a%3aMAILCOW_HOSTNAME
-- https://mxtoolbox.com/SuperTool.aspx?action=aaaa%3aMAILCOW_HOSTNAME
-- https://mxtoolbox.com/SuperTool.aspx?action=a%3aMAILMAN_DOMAIN
-- https://mxtoolbox.com/SuperTool.aspx?action=aaaa%3aMAILMAN_DOMAIN
-
-Installieren Sie [certbot](https://certbot.eff.org/) (als _root_ oder _sudo_):
-
-```
-apt install certbot
-```
-
-Holen Sie sich die gewünschten Zertifikate (als _root_ oder _sudo_):
-
-```
-certbot certonly -d mailcow_HOSTNAME
-certbot certonly -d MAILMAN_DOMAIN
-```
+Folgen Sie der [Reverse Proxy Anleitung](../../post_installation/reverse-proxy/r_p.md).
 
 ### Installieren Sie _mailcow_ mit _Mailman_ Integration
 

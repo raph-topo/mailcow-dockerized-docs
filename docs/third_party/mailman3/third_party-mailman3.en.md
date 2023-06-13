@@ -40,53 +40,9 @@ lists     IN A       1.2.3.4
 lists     IN AAAA    dead:beef
 ```
 
-### Install _Apache_ as a reverse proxy
+### Install a reverse proxy
 
-Install _Apache_, e.g. with this guide from _Digital Ocean_: [How To Install the Apache Web Server on Ubuntu 20.04](https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-20-04).
-
-Activate certain _Apache_ modules (as _root_ or _sudo_):
-
-```
-a2enmod rewrite proxy proxy_http headers ssl wsgi proxy_uwsgi http2
-```
-
-Maybe you have to install further packages to get these modules. This [PPA](https://launchpad.net/~ondrej/+archive/ubuntu/apache2) by _Ondřej Surý_ may help you.
-
-#### vHost configuration
-
-Copy the [mailcow.conf](https://github.com/g4rf/dockerized-mailcow-mailman/tree/master/apache/mailcow.conf) and the [mailman.conf](https://github.com/g4rf/dockerized-mailcow-mailman/tree/master/apache/mailman.conf) in the _Apache_ conf folder `sites-available` (e.g. under `/etc/apache2/sites-available`).
-
-Change in `mailcow.conf`:
-
-- `MAILCOW_HOSTNAME` to your **MAILCOW_HOSTNAME**
-
-Change in `mailman.conf`:
-
-- `MAILMAN_DOMAIN` to your _Mailman_ domain (e.g. `lists.example.org`)
-
-**Don't activate the configuration, as the ssl certificates and directories are missing yet.**
-
-### Obtain SSL certificates with _Let's Encrypt_
-
-Check if your DNS config is available over the internet and points to the right IP addresses, e.g. with [MXToolBox](https://mxtoolbox.com):
-
-- https://mxtoolbox.com/SuperTool.aspx?action=a%3aMAILCOW_HOSTNAME
-- https://mxtoolbox.com/SuperTool.aspx?action=aaaa%3aMAILCOW_HOSTNAME
-- https://mxtoolbox.com/SuperTool.aspx?action=a%3aMAILMAN_DOMAIN
-- https://mxtoolbox.com/SuperTool.aspx?action=aaaa%3aMAILMAN_DOMAIN
-
-Install [certbot](https://certbot.eff.org/) (as _root_ or _sudo_):
-
-```
-apt install certbot
-```
-
-Get the desired certificates (as _root_ or _sudo_):
-
-```
-certbot certonly -d MAILCOW_HOSTNAME
-certbot certonly -d MAILMAN_DOMAIN
-```
+Follow the [Reverse Proxy instructions](../../post_installation/reverse-proxy/r_p.md).
 
 ### Install _mailcow_ with _Mailman_ integration
 
